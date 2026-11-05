@@ -30,6 +30,7 @@ directly does not work: the app uses JavaScript modules, which browsers block on
 - **Traffic light**: tap a light to switch it on, tap it again to switch it off. Turns horizontal when the widget is wide.
 - **Pen** (dock): draw on the board with six colours, thin or thick lines, eraser, undo and clear. Drawings are saved with the class. *Done* or Esc leaves pen mode and ends the undo history.
 - **Pop out** (Chrome/Edge, button in a widget's title bar): the widget moves into a small window that stays on top of other programs, e.g. over a presentation. Click the button again or close the window to bring it back. One widget at a time.
+- **Clock**: current time and date, in the browser's language and format.
 - **Timer**: click the time to type a duration (`5`, `5:30`, `1:00:00`).
 - **F** toggles fullscreen.
 - **Export backup** in the class manager saves everything as JSON — use it to move your

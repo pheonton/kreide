@@ -819,6 +819,31 @@ body.pip {
   }
 }
 
+/* ---------- Clock ---------- */
+
+.clock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2cqh;
+  height: 100%;
+  padding: 0 12px 12px;
+  text-align: center;
+}
+.clock-time {
+  font-size: min(30cqw, 52cqh);
+  font-weight: 750;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.clock-date {
+  color: var(--muted);
+  font-size: min(7cqw, 12cqh);
+  font-weight: 600;
+}
+
 /* ---------- Random picker ---------- */
 
 .picker {
