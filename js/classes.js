@@ -63,8 +63,12 @@ function addStudents(classId, names) {
 function deleteClass(id) {
   confirmDeleteId = null;
   store.update((s) => {
+    const deleted = s.classes.find((c) => c.id === id);
     s.classes = s.classes.filter((c) => c.id !== id);
-    if (s.activeClassId === id) s.activeClassId = s.classes[0]?.id ?? null;
+    if (s.activeClassId !== id) return;
+    s.activeClassId = s.classes[0]?.id ?? null;
+    // Deleting the last class keeps its board on screen instead of bringing back an older one.
+    if (!s.activeClassId) s.board = deleted.board;
   });
 }
 
