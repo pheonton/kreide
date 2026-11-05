@@ -3,6 +3,7 @@ import { el, icon, clamp } from '../util.js';
 // Noise board: a quiet-class game. The lesson phase is split into squares; each square turns
 // green when the class was quiet enough during its slice of time, red when it was too loud.
 // The microphone is only measured for loudness in the browser — nothing is recorded or sent.
+// It is on while the widget is on the board (the browser shows its microphone indicator).
 
 const SQUARE_SECONDS = 20; // every square is a fixed slice of time
 const DURATIONS = [5, 10, 15, 20]; // minutes; longer phases get more squares
@@ -93,6 +94,8 @@ export default {
     const tileMs = () => SQUARE_SECONDS * 1000;
     const finished = () => st.tiles.length >= tileCount();
 
+    // The microphone starts as soon as the widget is on the board, so the meter shows the room's
+    // volume right away (to set the limit). It stops when the widget is closed or the class switches.
     async function startMic() {
       if (mic) return true;
       try {
@@ -105,7 +108,11 @@ export default {
         analyser.fftSize = 1024;
         audio.createMediaStreamSource(stream).connect(analyser);
         mic = { stream, audio, analyser, buffer: new Float32Array(analyser.fftSize) };
+        // After a reload the browser may hold audio until the first tap or click.
+        if (audio.state === 'suspended') addEventListener('pointerdown', () => audio.resume(), { once: true, capture: true });
         error = '';
+        last = performance.now();
+        timer = setInterval(tick, 100);
         return true;
       } catch (err) {
         console.warn('Microphone not available', err);
@@ -115,6 +122,7 @@ export default {
     }
 
     function stopMic() {
+      clearInterval(timer);
       mic?.stream.getTracks().forEach((t) => t.stop());
       mic?.audio.close();
       mic = null;
@@ -131,20 +139,23 @@ export default {
       level += (now - level) * (now > level ? 0.35 : 0.08); // rises quickly, falls slowly
     }
 
+    // Runs while the microphone is on: always updates the meter, scores squares only while playing.
     function tick() {
       const now = performance.now();
       const dt = now - last;
       last = now;
       measure();
-      if (level > st.threshold) loud += dt;
-      elapsed += dt;
-      if (elapsed >= tileMs()) {
-        st.tiles.push(loud / elapsed > LOUD_SHARE ? 'r' : 'g');
-        elapsed = 0;
-        loud = 0;
-        ctx.save();
-        if (finished()) return stop(true);
-        renderGrid();
+      if (running) {
+        if (level > st.threshold) loud += dt;
+        elapsed += dt;
+        if (elapsed >= tileMs()) {
+          st.tiles.push(loud / elapsed > LOUD_SHARE ? 'r' : 'g');
+          elapsed = 0;
+          loud = 0;
+          ctx.save();
+          if (finished()) return stop(true);
+          renderGrid();
+        }
       }
       renderLive();
     }
@@ -153,16 +164,13 @@ export default {
       grid.classList.remove('celebrate'); // a new round starts without the last celebration
       if (finished()) reset();
       if (!(await startMic())) return render();
+      mic.audio.resume(); // the Start click counts as permission to play audio
       running = true;
-      last = performance.now();
-      timer = setInterval(tick, 100);
       render();
     }
 
     function stop(done = false) {
       running = false;
-      clearInterval(timer);
-      stopMic();
       render();
       if (done && st.tiles.every((t) => t === 'g')) celebrate(); // a fully green board
     }
@@ -179,19 +187,16 @@ export default {
 
     // Listens for a moment and sets the limit just above the current volume.
     async function useCurrentLevel() {
-      const wasRunning = running;
       if (!(await startMic())) return render();
-      level = 0;
+      mic.audio.resume();
       let peak = 0;
       const until = performance.now() + 1500;
       const sample = setInterval(() => {
-        if (!wasRunning) measure(); // while playing, tick() already measures
-        peak = Math.max(peak, level);
+        peak = Math.max(peak, level); // tick() keeps measuring
         if (performance.now() < until) return;
         clearInterval(sample);
         st.threshold = clamp(peak + 0.05, 0.15, 0.95);
         ctx.save();
-        if (!wasRunning && !running) stopMic();
         renderLive();
       }, 100);
     }
@@ -286,11 +291,14 @@ export default {
     }
 
     render();
+    startMic().then(render); // live meter from the start
     const resize = new ResizeObserver(fitGrid);
     resize.observe(grid.parentElement);
     return {
       destroy() {
-        if (running) stop(); // switching class pauses the game and turns the microphone off
+        // closing the widget or switching class pauses the game and turns the microphone off
+        running = false;
+        stopMic();
         resize.disconnect();
       },
     };

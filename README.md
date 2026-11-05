@@ -28,7 +28,7 @@ in the address bar to install it as an app. After that it also works offline.
 - **Clock**: current time and date, in the browser's language and format.
 - **Group maker**: choose students per group or number of groups, then *Make groups*. Group sizes differ by at most one.
 - **Random student**: choose a student at random.
-- **Noise board**: a quiet game. Each square is 20 seconds; pick a time (5–20 min) for 15–60 squares. A square turns green when the class stays below the allowed volume, red when it gets too loud – a fully green board is celebrated. Drag the handle on the volume meter to set the allowed volume, or press *Use current level* to set it just above the room's current volume. Uses the microphone only to measure loudness – nothing is recorded or sent.
+- **Noise board**: a quiet game. Each square is 20 seconds; pick a time (5–20 min) for 15–60 squares. A square turns green when the class stays below the allowed volume, red when it gets too loud – a fully green board is celebrated. Drag the handle on the volume meter to set the allowed volume, or press *Use current level* to set it just above the room's current volume. The microphone is on while the widget is on the board (so the meter shows the room's volume right away) and only measures loudness – nothing is recorded or sent.
 - **Traffic light**: tap a light to switch it on, tap it again to switch it off. Turns horizontal when the widget is wide.
 - **Pen** (dock): draw on the board with seven colours, thin or thick lines, eraser, undo and clear. Drawings are saved with the class. *Done* or Esc leaves pen mode and ends the undo history.
 
