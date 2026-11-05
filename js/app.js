@@ -22,6 +22,7 @@ const BACKGROUNDS = [
   image('beach', 'Beach', '#e3f2f7', 'light'),
   image('dunes', 'Dunes', '#f8e2cc', 'light'),
   image('silk', 'Silk', '#dff1fb', 'light'),
+  image('petals', 'Petals', '#f3d6d2', 'light'),
 ];
 
 const MIN_W = 220;

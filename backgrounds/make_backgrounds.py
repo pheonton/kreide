@@ -284,3 +284,31 @@ body += ribbon([(side_x[0], -40), (side_x[1], 300), ((side_x[0] + side_x[1]) / 2
 body += ribbon(sweep(rng, -160, 2100, 260, 980, rng.randint(4, 5)), rng.uniform(300, 360), rng.uniform(1.8, 2.8), rng.uniform(0, 3), 36, '#7cc6ec', 0.5, edge=0.7)
 body += ribbon(sweep(rng, -160, 2100, 300, 960, rng.randint(4, 5)), rng.uniform(260, 320), rng.uniform(2.2, 3.2), rng.uniform(0, 3), 36, '#4aa8dd', 0.48, edge=0.65)
 svg('silk.svg', body, defs)
+
+# 10. Petals: soft, overlapping translucent discs in rose and sand, like scattered rose petals
+random.seed(41)
+defs = ('<linearGradient id="pbg" x1="0" y1="0" x2="1" y2="1">'
+        '<stop offset="0" stop-color="#f6e9dc"/><stop offset="0.55" stop-color="#f3d6d2"/><stop offset="1" stop-color="#eec3c4"/></linearGradient>'
+        '<filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="10"/></filter>')
+PETAL_TONES = ['#f4b8be', '#f7cdd0', '#fbe3e2', '#f2d2b8', '#fff6f2', '#eeaab3']
+for i, tone in enumerate(PETAL_TONES):  # each disc is a little deeper in the middle, like a petal
+    defs += (f'<radialGradient id="pt{i}" cx="0.45" cy="0.42" r="0.6">'
+             f'<stop offset="0" stop-color="{tone}" stop-opacity="0.75"/>'
+             f'<stop offset="1" stop-color="{tone}" stop-opacity="0.35"/></radialGradient>')
+
+
+def discs(count, r_lo, r_hi, edge):
+    out = ''
+    for _ in range(count):
+        x, y = random.uniform(-100, W + 100), random.uniform(-100, H + 100)
+        r = random.uniform(r_lo, r_hi)
+        tone = random.randrange(len(PETAL_TONES))
+        out += (f'<circle cx="{x:.0f}" cy="{y:.0f}" r="{r:.0f}" fill="url(#pt{tone})" opacity="{random.uniform(0.35, 0.8):.2f}"'
+                + (f' stroke="#ffffff" stroke-opacity="{random.uniform(0.35, 0.7):.2f}" stroke-width="2"' if edge else '') + '/>')
+    return out
+
+
+body = f'<rect width="{W}" height="{H}" fill="url(#pbg)"/>'
+body += f'<g filter="url(#soft)">{discs(45, 90, 220, False)}</g>'  # blurred discs further back
+body += discs(70, 70, 170, True)                                   # crisp discs with a fine bright rim
+svg('petals.svg', body, defs)
