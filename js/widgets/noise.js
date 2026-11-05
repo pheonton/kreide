@@ -7,7 +7,7 @@ import { el, icon, clamp } from '../util.js';
 
 const SQUARE_SECONDS = 20; // every square is a fixed slice of time
 const DURATIONS = [5, 10, 15, 20]; // minutes; longer phases get more squares
-const LOUD_SHARE = 0.25; // a square turns red when more than this share of its time was too loud
+const LOUD_SHARE = 0.1; // a square turns red when more than this share of its time (2 of 20 s) was too loud
 
 export default {
   type: 'noise',
