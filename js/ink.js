@@ -5,7 +5,8 @@
 import { store } from './store.js';
 import { el, icon } from './util.js';
 
-const COLORS = ['#111827', '#ffffff', '#ef4444', '#2563eb', '#16a34a', '#f59e0b'];
+// black, white, blue, green, yellow, orange, red
+const COLORS = ['#111827', '#ffffff', '#133f95', '#0f6a56', '#f1c232', '#c75404', '#ae0127'];
 const SIZES = { thin: 0.0025, thick: 0.007 }; // fraction of the board width
 const ERASER_RADIUS = 14; // px
 
@@ -17,12 +18,13 @@ const ctx2d = canvas.getContext('2d');
 
 let active = false;
 let tool = 'pen'; // 'pen' | 'eraser'
-let color = null; // null = follow the background (white on dark, black on light)
+let color = null; // null = follow the background (see penColor)
 let size = 'thin';
 let current = null; // stroke being drawn
 let confirmClear = false;
 
 const strokes = () => (store.board().ink ??= []);
+// Until a colour is picked: black on light backgrounds, white on dark ones.
 const penColor = () => color ?? (document.body.dataset.tone === 'light' ? COLORS[0] : COLORS[1]);
 const save = () => store.update(undefined, { silent: true });
 
