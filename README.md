@@ -11,14 +11,16 @@ in the address bar to install it as an app. After that it also works offline.
 > empty app; classes, names and boards live in each browser's local storage. Never commit
 > exported backups (`kreide-backup-*.json`) or class lists — `.gitignore` blocks the usual ones.
 
-## Run locally (development)
+## Run locally (development only)
 
 ```bash
-./start.sh
+python3 serve.py
 ```
 
-Serves the folder on <http://localhost:8642> (this computer only). Opening `index.html`
-directly does not work: the app uses JavaScript modules, which browsers block on `file://`.
+Serves the folder on <http://localhost:8642> (this computer only), for testing changes before
+they are pushed. Opening `index.html` directly does not work: the app uses JavaScript modules,
+which browsers block on `file://`. Every push to `main` is published by
+`.github/workflows/pages.yml`.
 
 ## Using it
 
