@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kreide</title>
+    <meta name="description" content="Private classroom screen: timer, random student picker and class lists, stored only on this computer." />
+    <meta name="theme-color" content="#1e3a8a" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+    <link rel="stylesheet" href="css/app.css" />
+    <script type="module" src="js/app.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand"><img src="icons/icon.svg" alt="" width="22" height="22" />Kreide</div>
+      <div class="class-picker">
+        <button id="firstClassBtn" class="bar-btn" hidden></button>
+        <button id="classBtn" class="bar-btn class-btn" popovertarget="classMenu" aria-label="Class shown on the board"></button>
+        <button id="manageBtn" class="bar-btn icon-only" title="Students"></button>
+      </div>
+      <span class="spacer"></span>
+      <button id="bgBtn" class="bar-btn icon-only" popovertarget="bgPopover" title="Background"></button>
+      <button id="fsBtn" class="bar-btn icon-only"></button>
+    </header>
+    <div id="classMenu" class="popover class-menu" popover></div>
+    <div id="bgPopover" class="popover" popover></div>
+
+    <main id="board" class="board">
+      <div id="boardEmpty" class="board-empty">
+        <h1>Kreide</h1>
+        <p>Add a widget from the dock below. Your classes stay on this computer.</p>
+      </div>
+    </main>
+
+    <nav id="dock" class="dock" aria-label="Add widget"></nav>
+    <nav id="penBar" class="dock pen-bar" aria-label="Pen tools" hidden></nav>
+
+    <dialog id="manager" class="manager"></dialog>
+
+    <script>
+      // Opened by double-clicking index.html (file://): browsers block the app's modules there.
+      if (!location.protocol.startsWith('http')) {
+        document.getElementById('boardEmpty').innerHTML =
+          '<h1>Please open Kreide from its web address</h1>' +
+          '<p>Opening index.html directly does not work. Use the online version, or run <code>./start.sh</code> ' +
+          'in this folder and open <strong>http://localhost:8642</strong>.</p>';
+      }
+    </script>
+  </body>
+</html>

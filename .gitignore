@@ -1,0 +1,16 @@
+# Never commit student data: exported backups and class lists
+*backup*.json
+*.xls
+*.xlsx
+*.xlsm
+*.csv
+*.tsv
+*.ods
+
+# Local tooling
+.claude/
+__pycache__/
+_tmp*
+
+# Personal files that must not be published
+private/
