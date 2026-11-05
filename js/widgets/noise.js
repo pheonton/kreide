@@ -34,18 +34,45 @@ export default {
     const meterFill = el('div', { class: 'noise-meter-fill' });
     const meterMark = el('div', { class: 'noise-meter-mark' });
     const controls = el('div', { class: 'noise-controls' });
-    const slider = el('input', {
-      type: 'range',
-      min: '0.15',
-      max: '0.95',
-      step: '0.01',
-      value: String(st.threshold),
-      'aria-label': 'Allowed volume',
-      oninput: (e) => {
-        st.threshold = Number(e.target.value);
-        ctx.save();
-        meterMark.style.left = `${st.threshold * 100}%`;
+
+    // The meter doubles as the "allowed volume" control: drag or tap to move the limit,
+    // or use the arrow keys when it has focus.
+    function setThreshold(value) {
+      st.threshold = clamp(Math.round(value * 100) / 100, 0.15, 0.95);
+      ctx.save();
+      renderLive();
+    }
+    const meter = el(
+      'div',
+      {
+        class: 'noise-meter',
+        role: 'slider',
+        tabindex: '0',
+        title: 'Current volume – drag the marker to set the allowed volume',
+        'aria-label': 'Allowed volume',
+        'aria-valuemin': '15',
+        'aria-valuemax': '95',
+        onkeydown: (e) => {
+          const step = { ArrowLeft: -0.02, ArrowDown: -0.02, ArrowRight: 0.02, ArrowUp: 0.02 }[e.key];
+          if (!step) return;
+          e.preventDefault();
+          setThreshold(st.threshold + step);
+        },
       },
+      el('div', { class: 'noise-meter-track' }, meterFill),
+      meterMark,
+    );
+    meter.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      meter.setPointerCapture(e.pointerId);
+      meter.focus();
+      const follow = (ev) => {
+        const r = meter.getBoundingClientRect();
+        setThreshold((ev.clientX - r.left) / r.width);
+      };
+      follow(e);
+      meter.addEventListener('pointermove', follow);
+      meter.addEventListener('pointerup', () => meter.removeEventListener('pointermove', follow), { once: true });
     });
     body.append(
       el(
@@ -56,8 +83,7 @@ export default {
         el(
           'div',
           { class: 'noise-footer' },
-          el('div', { class: 'noise-meter', title: 'Current volume' }, meterFill, meterMark),
-          el('label', { class: 'noise-allowed' }, 'Allowed volume', slider),
+          meter,
           el('button', { class: 'btn small', title: 'Listen briefly and set the limit just above the current volume', onclick: useCurrentLevel }, 'Use current level'),
         ),
       ),
@@ -164,7 +190,6 @@ export default {
         if (performance.now() < until) return;
         clearInterval(sample);
         st.threshold = clamp(peak + 0.05, 0.15, 0.95);
-        slider.value = String(st.threshold);
         ctx.save();
         if (!wasRunning && !running) stopMic();
         renderLive();
@@ -238,6 +263,7 @@ export default {
       meterFill.style.width = `${level * 100}%`;
       meterFill.classList.toggle('over', level > st.threshold);
       meterMark.style.left = `${st.threshold * 100}%`;
+      meter.setAttribute('aria-valuenow', String(Math.round(st.threshold * 100)));
     }
 
     // Square cells: pick the column count that best matches the widget's shape.
