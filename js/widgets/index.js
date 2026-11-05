@@ -13,5 +13,6 @@ import picker from './picker.js';
 import groups from './groups.js';
 import traffic from './traffic.js';
 import clock from './clock.js';
+import noise from './noise.js';
 
-export const widgetTypes = Object.fromEntries([timer, clock, picker, groups, traffic].map((w) => [w.type, w]));
+export const widgetTypes = Object.fromEntries([timer, clock, picker, groups, traffic, noise].map((w) => [w.type, w]));

@@ -844,6 +844,133 @@ body.pip {
   font-weight: 600;
 }
 
+/* ---------- Noise board ---------- */
+
+.noise {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  padding: 0 14px 14px;
+}
+.noise-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.noise-board {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+}
+.noise-grid {
+  display: grid;
+  gap: 6px;
+}
+.noise-cell {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  background: var(--surface-2);
+  transition: background 0.4s;
+}
+.noise-cell.green {
+  background: var(--ok);
+}
+.noise-cell.red {
+  background: var(--danger);
+}
+/* The square being played fills from the bottom: green while quiet, red while too loud. */
+.noise-cell.current {
+  background: linear-gradient(to top, color-mix(in srgb, var(--ok) 70%, transparent) calc(var(--p, 0) * 100%), var(--surface-2) 0);
+  outline: 2px solid var(--ok);
+  outline-offset: 1px;
+}
+.noise-cell.current.loud {
+  background: linear-gradient(to top, color-mix(in srgb, var(--danger) 70%, transparent) calc(var(--p, 0) * 100%), var(--surface-2) 0);
+  outline-color: var(--danger);
+}
+.noise-grid.celebrate .noise-cell.green {
+  animation: cheer 0.6s ease-out 3 backwards; /* bounces three times */
+}
+.noise-grid.celebrate .noise-cell:nth-child(3n) {
+  animation-delay: 0.1s;
+}
+.noise-grid.celebrate .noise-cell:nth-child(3n + 1) {
+  animation-delay: 0.2s;
+}
+@keyframes cheer {
+  50% {
+    transform: scale(1.15);
+  }
+}
+.noise-message {
+  position: absolute;
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  font-size: clamp(1rem, 5cqh, 1.8rem);
+  font-weight: 700;
+  text-align: center;
+}
+.noise-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.noise-meter {
+  position: relative;
+  flex: 1;
+  height: 10px;
+  border-radius: 99px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.noise-meter-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--ok);
+  transition: width 0.1s linear;
+}
+.noise-meter-fill.over {
+  background: var(--danger);
+}
+.noise-meter-mark {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 3px;
+  margin-left: -1px;
+  background: var(--text);
+  opacity: 0.6;
+}
+.noise-allowed {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.noise-allowed input {
+  width: 110px;
+  accent-color: var(--accent);
+}
+@container (max-height: 260px) {
+  .noise-footer {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .noise-grid.celebrate .noise-cell.green {
+    animation: none;
+  }
+}
+
 /* ---------- Random picker ---------- */
 
 .picker {
