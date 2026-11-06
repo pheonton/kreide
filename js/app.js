@@ -238,7 +238,7 @@ function mountWidget(w) {
     canPopOut && el('button', { class: 'icon-btn small pop-btn', title: 'Pop out: keep on top of other windows / back to board', onclick: () => togglePopOut(w.id, type.title) }, popIcons()),
     el('button', { class: 'icon-btn small', title: 'Close widget', onclick: () => removeWidget(w.id) }, icon('x')),
   );
-  const handle = el('div', { class: 'resize-handle', title: 'Resize' });
+  const handle = el('div', { class: 'resize-handle', title: 'Resize' }, icon('grip'));
   const root = el('section', { class: `widget widget-${w.type}` }, header, body, handle);
   root.addEventListener('pointerdown', () => bringToFront(w.id), true);
 

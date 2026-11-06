@@ -601,14 +601,6 @@ body[data-tone='light'] .pen-bar {
 .widget-title {
   flex: 1;
 }
-.widget-header .icon-btn {
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-.widget:hover .widget-header .icon-btn,
-.widget-header .icon-btn:focus-visible {
-  opacity: 1;
-}
 
 .widget-body {
   position: relative;
@@ -617,27 +609,31 @@ body[data-tone='light'] .pen-bar {
   container-type: size;
 }
 
+/* Resize corner: two diagonal strokes and a dot, set in from the rounded corner. */
 .resize-handle {
   position: absolute;
-  right: 2px;
-  bottom: 2px;
-  width: 20px;
-  height: 20px;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  color: var(--muted);
   cursor: nwse-resize;
   touch-action: none;
-  background: linear-gradient(135deg, transparent 58%, var(--muted) 58%, var(--muted) 62%, transparent 62%, transparent 74%, var(--muted) 74%, var(--muted) 78%, transparent 78%);
-  opacity: 0;
-  transition: opacity 0.15s;
 }
-.widget:hover .resize-handle {
-  opacity: 1;
+.resize-handle .icon {
+  width: 18px;
+  height: 18px;
+}
+.resize-handle svg {
+  stroke-width: 1.5; /* same line weight on screen as the header icons */
 }
 
-/* Touch screens have no hover: keep close and resize visible, with finger-sized targets.
+/* Touch screens: finger-sized buttons and resize corner.
    any-pointer also catches interactive boards that have a mouse attached. */
 @media (any-pointer: coarse) {
   .widget-header .icon-btn {
-    opacity: 1;
     width: 40px;
     height: 40px;
   }
@@ -646,12 +642,15 @@ body[data-tone='light'] .pen-bar {
     margin-bottom: 14px;
   }
   .resize-handle {
-    right: 0;
-    bottom: 0;
-    width: 34px;
-    height: 34px;
-    opacity: 1;
-    background: linear-gradient(135deg, transparent 60%, var(--muted) 60%, var(--muted) 63%, transparent 63%, transparent 73%, var(--muted) 73%, var(--muted) 76%, transparent 76%);
+    width: 36px;
+    height: 36px;
+  }
+  .resize-handle .icon {
+    width: 22px;
+    height: 22px;
+  }
+  .resize-handle svg {
+    stroke-width: 1.25;
   }
 }
 
