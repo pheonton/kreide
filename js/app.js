@@ -238,7 +238,7 @@ function mountWidget(w) {
     { class: 'widget-header' },
     icon(type.icon),
     el('span', { class: 'widget-title' }, type.title),
-    canPopOut && el('button', { class: 'icon-btn small pop-btn', title: 'Pop out: keep on top of other windows / back to board', onclick: () => togglePopOut(w.id, type.title) }, popIcons()),
+    canPopOut && el('button', { class: 'icon-btn small pop-btn', title: 'Pop out: keep on top of other windows', onclick: () => togglePopOut(w.id, type.title) }, icon('popout')),
     el('button', { class: 'icon-btn small', title: 'Close widget', onclick: () => removeWidget(w.id) }, icon('x')),
   );
   const handle = el('div', { class: 'resize-handle', title: 'Resize' }, icon('grip'));
@@ -278,14 +278,6 @@ function unmount(id) {
 
 const canPopOut = 'documentPictureInPicture' in window;
 let popped = null; // { id, root, win }
-
-function popIcons() {
-  const out = icon('popout');
-  const back = icon('popin');
-  out.classList.add('icon-popout');
-  back.classList.add('icon-popin');
-  return [out, back];
-}
 
 async function togglePopOut(id, title) {
   if (popped?.id === id) return popped.win.close(); // second click: back to the board

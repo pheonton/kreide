@@ -18,7 +18,7 @@ in the address bar to install it as an app. After that it also works offline.
   are detected automatically; workbooks with one sheet per class are supported.
 - **Each class has its own board**: background and widgets switch with the class. A new class starts with a copy of the board on screen.
 - **Dock** (bottom): add widgets. Drag them by the title bar, resize from the bottom-right corner.
-- **Pop out** (Chrome/Edge, button in a widget's title bar): the widget moves into a small window that stays on top of other programs, e.g. over a presentation. Click the button again or close the window to bring it back. One widget at a time.
+- **Pop out** (Chrome/Edge, button in a widget's title bar): the widget moves into a small window that stays on top of other programs, e.g. over a presentation. Close the window (or use its back button) to bring it back; the widget's own header is hidden there. One widget at a time.
 - **F** toggles fullscreen.
 - **Export backup** in the class manager saves everything as JSON — use it to move your classes to another computer (use **Restore backup** there to load it) or as a safety copy. Data does not sync between computers or between the online and the local version.
 

@@ -712,13 +712,6 @@ body[data-tone='light'] .pen-bar {
 
 /* ---------- Pop-out window ---------- */
 
-.pop-btn .icon-popin,
-.widget.popped .pop-btn .icon-popout {
-  display: none;
-}
-.widget.popped .pop-btn .icon-popin {
-  display: inline-flex;
-}
 body.pip {
   display: block;
   height: 100vh;
@@ -733,11 +726,13 @@ body.pip {
   border-radius: 0;
   box-shadow: none;
 }
+/* The browser's own title bar already brings the widget back (or closes the window),
+   so the widget's header is hidden there and its space goes to the content. */
 .widget.popped .widget-header {
-  cursor: default;
+  display: none;
 }
-.widget.popped .widget-header .icon-btn {
-  opacity: 1;
+.widget.popped .widget-body {
+  padding-top: 12px;
 }
 .widget.popped .resize-handle {
   display: none;
