@@ -87,20 +87,29 @@ function renderClassMenu() {
   );
 }
 
-// Anchor the menu below its button.
-classMenu.addEventListener('beforetoggle', (e) => {
-  const open = e.newState === 'open';
-  classBtn.classList.toggle('open', open);
-  if (!open) return;
-  const rect = classBtn.getBoundingClientRect();
-  Object.assign(classMenu.style, { top: `${rect.bottom + 8}px`, left: `${rect.left}px`, right: 'auto' });
-});
+// Show a popover just below its button, kept inside the window.
+function anchorBelow(popover, button) {
+  popover.addEventListener('beforetoggle', (e) => {
+    button.classList.toggle('open', e.newState === 'open');
+    if (e.newState !== 'open') return;
+    const rect = button.getBoundingClientRect();
+    Object.assign(popover.style, { top: `${rect.bottom + 8}px`, left: `${rect.left}px`, right: 'auto' });
+  });
+  popover.addEventListener('toggle', (e) => {
+    if (e.newState !== 'open') return;
+    const overflow = popover.getBoundingClientRect().right - (innerWidth - 8);
+    if (overflow > 0) popover.style.left = `${Math.max(8, parseFloat(popover.style.left) - overflow)}px`;
+  });
+}
+anchorBelow(classMenu, classBtn);
 
 manageBtn.append(icon('users'));
 manageBtn.addEventListener('click', () => openStudents());
 
 const bgPopover = document.getElementById('bgPopover');
-document.getElementById('bgBtn').append(icon('palette'));
+const bgBtn = document.getElementById('bgBtn');
+bgBtn.append(icon('palette'));
+anchorBelow(bgPopover, bgBtn);
 
 function renderBackground() {
   const current = store.board().background;
@@ -128,17 +137,11 @@ function renderBackground() {
   );
 }
 
-const fsBtn = document.getElementById('fsBtn');
-function renderFullscreenButton() {
-  fsBtn.replaceChildren(icon(document.fullscreenElement ? 'minimize' : 'maximize'));
-  fsBtn.title = document.fullscreenElement ? 'Exit fullscreen (F)' : 'Fullscreen (F)';
-}
+// Fullscreen has no button (the browser and window already offer it); F still toggles it.
 function toggleFullscreen() {
   if (document.fullscreenElement) document.exitFullscreen();
   else document.documentElement.requestFullscreen?.();
 }
-fsBtn.addEventListener('click', toggleFullscreen);
-document.addEventListener('fullscreenchange', renderFullscreenButton);
 
 addEventListener('keydown', (e) => {
   if (e.target.closest('input, textarea, select, [contenteditable]') || e.ctrlKey || e.metaKey || e.altKey) return;
@@ -337,7 +340,6 @@ store.subscribe((_, info) => {
 });
 
 render();
-renderFullscreenButton();
 
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
   navigator.serviceWorker.register('./sw.js').catch((err) => console.warn('Service worker not registered', err));

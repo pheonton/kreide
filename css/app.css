@@ -395,9 +395,7 @@ button {
 }
 
 .popover {
-  inset: auto;
-  top: 58px;
-  right: 16px;
+  inset: auto; /* placed below its button by anchorBelow() */
   margin: 0;
   padding: 14px;
   border: 1px solid var(--border);
@@ -432,19 +430,21 @@ button {
 
 .dock {
   position: fixed;
-  left: 50%;
+  left: 8px;
+  right: 8px;
   bottom: 14px;
   z-index: 1000;
   display: flex;
   gap: 4px;
+  width: fit-content; /* centred between the 8px gutters, as wide as its buttons */
+  max-width: calc(100vw - 16px);
+  margin: 0 auto;
   padding: 6px;
-  transform: translateX(-50%);
   border-radius: 18px;
   background: var(--bar-bg);
   backdrop-filter: blur(12px);
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-  /* On narrow screens the dock keeps a 16px gutter and scrolls sideways instead of overflowing. */
-  max-width: calc(100vw - 32px);
+  /* Buttons shrink on narrow screens; scrolling is only a last resort. */
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
@@ -460,8 +460,9 @@ button {
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  min-width: 84px;
-  padding: 8px 14px;
+  flex: 0 1 auto;
+  min-width: 58px;
+  padding: 8px clamp(4px, 1.2vw, 14px);
   border: 0;
   border-radius: 12px;
   background: transparent;
@@ -1527,6 +1528,17 @@ body.pip {
 }
 
 /* ---------- Small screens ---------- */
+
+/* Phones: the dock shows icons only, so all buttons fit (names stay as tooltips). */
+@media (max-width: 480px) {
+  .dock-btn {
+    min-width: 40px;
+    padding: 10px 6px;
+  }
+  .dock-btn span:not(.icon) {
+    display: none;
+  }
+}
 
 @media (max-width: 720px) {
   .brand {
