@@ -10,6 +10,7 @@ const image = (id, label, color, tone = 'dark') => ({
   id,
   label,
   tone,
+  color,
   css: `url("${new URL(`backgrounds/${id}.svg`, document.baseURI)}") center / cover no-repeat ${color}`,
 });
 
@@ -107,6 +108,8 @@ function renderBackground() {
   document.body.style.setProperty('--board-bg', bg.css);
   document.body.dataset.tone = bg.tone;
   if (popped) popped.win.document.body.dataset.tone = bg.tone;
+  // Title bar and window buttons of the installed app take the background's colour.
+  document.querySelector('meta[name="theme-color"]').content = bg.color;
   bgPopover.replaceChildren(
     el('p', { class: 'popover-title' }, 'Background'),
     el(

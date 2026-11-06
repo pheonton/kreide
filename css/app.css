@@ -265,6 +265,25 @@ button {
   color: var(--bar-text);
 }
 
+/* Installed app with its own title bar (Window Controls Overlay, Windows/macOS):
+   the top bar sits in the title bar area, keeps clear of the window buttons the browser reports,
+   and its empty space moves the window (drag, double-click to maximise). */
+@media (display-mode: window-controls-overlay) {
+  .topbar {
+    min-height: env(titlebar-area-height, 0px);
+    padding-left: calc(env(titlebar-area-x, 0px) + 16px);
+    padding-right: calc(100vw - env(titlebar-area-x, 0px) - env(titlebar-area-width, 100vw) + 16px);
+    -webkit-app-region: drag;
+    app-region: drag;
+  }
+  .topbar button,
+  .topbar select,
+  .topbar a {
+    -webkit-app-region: no-drag;
+    app-region: no-drag;
+  }
+}
+
 .brand {
   display: flex;
   align-items: center;
