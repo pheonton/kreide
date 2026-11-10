@@ -756,7 +756,10 @@ body.pip {
   padding: 0;
   border: 0;
   background: none;
-  font-size: min(25cqw, 34cqh);
+  /* The digits get the height the controls leave over (--controls), so the presets and
+     buttons stay visible even in small widgets, e.g. on a big screen with high scaling. */
+  --controls: 175px;
+  font-size: min(25cqw, max(28px, calc((100cqh - var(--controls)) * 0.95)));
   font-weight: 750;
   line-height: 1;
   letter-spacing: -0.03em;
@@ -822,14 +825,21 @@ body.pip {
   font-size: clamp(0.9rem, 4cqh, 1.25rem);
 }
 
-@container (max-height: 230px) {
+/* When space runs out, the Timer/Stopwatch switch goes first, the presets only in tiny widgets. */
+@container (max-height: 300px) {
+  .timer-modes {
+    display: none;
+  }
+  .timer-display {
+    --controls: 135px;
+  }
+}
+@container (max-height: 165px) {
   .timer-presets {
     display: none;
   }
-}
-@container (max-height: 210px) {
-  .timer-modes {
-    display: none;
+  .timer-display {
+    --controls: 95px;
   }
 }
 
@@ -1060,7 +1070,7 @@ body.pip {
   flex: 1;
   min-height: 0;
   margin-bottom: 10px;
-  overflow: auto;
+  overflow: hidden; /* fit() sizes the groups so they always fit; no scrollbars while measuring */
   container-type: size;
 }
 .groups-empty {
@@ -1105,7 +1115,15 @@ body.pip {
 .group-card li {
   font-weight: 600;
   line-height: 1.25;
-  overflow-wrap: anywhere;
+  white-space: nowrap; /* one line per name; fit() picks a size where they all fit */
+  overflow: hidden;
+  text-overflow: ellipsis; /* only if even the smallest size is too big */
+}
+.group-grid.measuring li {
+  text-overflow: clip; /* with "…" the browser reports the cut width, hiding the overflow */
+}
+.group-grid.measuring.measuring .group-card {
+  animation: none; /* cards fly in from below; measure them where they will end up (beats .animate) */
 }
 .group-grid.animate .group-card {
   animation: deal 0.35s cubic-bezier(0.2, 1.2, 0.4, 1) backwards;
@@ -1121,8 +1139,17 @@ body.pip {
 .groups-controls {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
+  gap: 10px; /* one line, so the groups keep their space; narrow widgets drop the extras */
+}
+@container (max-width: 560px) {
+  .groups-hint {
+    display: none;
+  }
+}
+@container (max-width: 420px) {
+  .groups-controls .btn-label {
+    display: none;
+  }
 }
 .stepper {
   display: inline-flex;

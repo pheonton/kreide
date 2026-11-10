@@ -76,7 +76,7 @@ export default {
         ),
         el('span', { class: 'groups-hint' }, hint),
         el('span', { class: 'spacer' }),
-        el('button', { class: 'btn primary', disabled: !!cls && !n, onclick: generate }, icon('shuffle'), 'Make groups'),
+        el('button', { class: 'btn primary', disabled: !!cls && !n, onclick: generate, title: 'Make groups' }, icon('shuffle'), el('span', { class: 'btn-label' }, 'Make groups')),
       );
     }
 
@@ -92,8 +92,7 @@ export default {
       if (!groups.length) {
         return stage.replaceChildren(el('p', { class: 'groups-empty' }, `${cls.students.length} students – press “Make groups”`));
       }
-      const chars = Math.max(8, ...cls.students.map((s) => s.name.length));
-      layout = { count: groups.length, longest: Math.max(...groups.map((g) => g.length)), chars };
+      layout = { count: groups.length };
       stage.replaceChildren(
         el(
           'div',
@@ -111,24 +110,43 @@ export default {
       fit();
     }
 
-    // Pick the column count that allows the largest text with every name on one line.
+    // Pick the column count and text size that show every group completely with each name on one
+    // line. Measured on the real layout (not estimated), so it also holds for long names.
     let layout = null;
     function fit() {
       const grid = stage.querySelector('.group-grid');
       if (!grid || !layout) return;
-      const { count, longest, chars } = layout;
-      const width = stage.clientWidth;
-      const height = stage.clientHeight;
-      let best = { cols: 1, size: 0 };
-      for (let cols = 1; cols <= count; cols++) {
-        const rows = Math.ceil(count / cols);
-        const byHeight = (height - 8 * (rows - 1)) / (rows * (longest * 1.25 + 1.9));
-        const byWidth = (width - 8 * (cols - 1)) / cols / (chars * 0.6 + 1.4);
-        const size = Math.min(byHeight, byWidth);
-        if (size > best.size) best = { cols, size };
+      const names = [...grid.querySelectorAll('li')];
+      const range = document.createRange();
+      // Exact text width (scrollWidth is rounded, and even a fraction too wide shows "…").
+      const nameFits = (li) => {
+        range.selectNodeContents(li);
+        return range.getBoundingClientRect().width <= li.getBoundingClientRect().width;
+      };
+      const fits = () =>
+        stage.scrollHeight <= stage.clientHeight + 1 &&
+        stage.scrollWidth <= stage.clientWidth + 1 &&
+        names.every(nameFits);
+      const tryLayout = (cols, size) => {
+        grid.style.setProperty('--cols', String(cols));
+        grid.style.fontSize = `${size}px`;
+        return fits();
+      };
+      grid.classList.add('measuring'); // without the "…" so long names show their real width
+      let best = { cols: Math.min(layout.count, 3), size: 6 };
+      for (let cols = 1; cols <= layout.count; cols++) {
+        if (!tryLayout(cols, best.size)) continue; // can't beat the best so far
+        let lo = best.size;
+        let hi = 40;
+        while (hi - lo > 0.5) {
+          const mid = (lo + hi) / 2;
+          if (tryLayout(cols, mid)) lo = mid;
+          else hi = mid;
+        }
+        if (lo > best.size || cols === 1) best = { cols, size: lo };
       }
-      grid.style.setProperty('--cols', String(best.cols));
-      grid.style.fontSize = `${Math.max(12, Math.min(40, best.size))}px`;
+      tryLayout(best.cols, best.size);
+      grid.classList.remove('measuring');
     }
 
     render();
