@@ -417,6 +417,9 @@ button {
   grid-template-columns: repeat(3, 96px);
   gap: 8px;
 }
+.swatch.new-row {
+  grid-column-start: 1;
+}
 .swatch {
   width: 96px;
   height: 54px;

@@ -20,10 +20,13 @@ const BACKGROUNDS = [
   image('lowpoly', 'Low poly', '#1e3a8a'),
   image('topo', 'Topography', '#163a35'),
   image('dusk', 'Dusk', '#3b1a46'),
+  image('honeycomb', 'Honeycomb', '#1c1c1c'),
   image('beach', 'Beach', '#e3f2f7', 'light'),
-  image('dunes', 'Dunes', '#f8e2cc', 'light'),
   image('silk', 'Silk', '#dff1fb', 'light'),
   image('petals', 'Petals', '#f3d6d2', 'light'),
+  image('paper', 'Grid paper', '#f8f7f0', 'light'),
+  image('pastel', 'Pastel', '#f9f4ec', 'light'),
+  image('animals', 'Animals', '#eef3ec', 'light'),
 ];
 
 const MIN_W = 220;
@@ -124,9 +127,10 @@ function renderBackground() {
     el(
       'div',
       { class: 'swatches' },
-      BACKGROUNDS.map((b) =>
+      BACKGROUNDS.map((b, i) =>
         el('button', {
-          class: 'swatch' + (b.id === bg.id ? ' active' : ''),
+          // light backgrounds always start on a new row, after the dark ones
+          class: 'swatch' + (b.id === bg.id ? ' active' : '') + (b.tone !== BACKGROUNDS[i - 1]?.tone ? ' new-row' : ''),
           style: { background: b.css },
           title: b.label,
           'aria-label': b.label,

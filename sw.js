@@ -1,6 +1,6 @@
 // Offline cache for the app files. Student data is never cached here — it lives in localStorage.
 // Bump VERSION when files are added or removed.
-const VERSION = 'kreide-v43';
+const VERSION = 'kreide-v48';
 const ASSETS = [
   './',
   './index.html',
@@ -26,9 +26,12 @@ const ASSETS = [
   './backgrounds/topo.svg',
   './backgrounds/dusk.svg',
   './backgrounds/beach.svg',
-  './backgrounds/dunes.svg',
   './backgrounds/silk.svg',
   './backgrounds/petals.svg',
+  './backgrounds/paper.svg',
+  './backgrounds/pastel.svg',
+  './backgrounds/honeycomb.svg',
+  './backgrounds/animals.svg',
   './icons/icon.svg',
   './icons/icon-192.png',
   './icons/icon-512.png',
